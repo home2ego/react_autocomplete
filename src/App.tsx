@@ -28,9 +28,15 @@ export const App: React.FC = () => {
     setSelectedPerson(person);
   };
 
-  const filteredPeople = peopleFromServer.filter(person =>
-    person.name.toLowerCase().includes(appliedQuery.toLowerCase()),
-  );
+  const filteredPeople = peopleFromServer.filter(person => {
+    const trimmedQuery = appliedQuery.trim();
+
+    if (!trimmedQuery) {
+      return;
+    }
+
+    return person.name.toLowerCase().includes(trimmedQuery.toLowerCase());
+  });
 
   return (
     <div className="container">
