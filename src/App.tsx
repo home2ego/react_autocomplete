@@ -7,13 +7,17 @@ import './App.scss';
 import { peopleFromServer } from './data/people';
 import { Person } from './types/Person';
 
-export const App: React.FC = () => {
+type Props = {
+  dobounceDelay?: number;
+};
+
+export const App: React.FC<Props> = ({ dobounceDelay = 100 }) => {
   const [query, setQuery] = useState('');
   const [appliedQuery, setAppliedQuery] = useState('');
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
   const [isActive, setActive] = useState(false);
 
-  const applyQuery = debounce(setAppliedQuery, 500);
+  const applyQuery = debounce(setAppliedQuery, dobounceDelay);
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -30,10 +34,6 @@ export const App: React.FC = () => {
 
   const filteredPeople = peopleFromServer.filter(person => {
     const trimmedQuery = appliedQuery.trim();
-
-    if (!trimmedQuery) {
-      return;
-    }
 
     return person.name.toLowerCase().includes(trimmedQuery.toLowerCase());
   });
@@ -65,7 +65,7 @@ export const App: React.FC = () => {
             />
           </div>
 
-          {!filteredPeople.length || (
+          {filteredPeople.length > 0 && (
             <div
               className="dropdown-menu"
               role="menu"
@@ -94,7 +94,7 @@ export const App: React.FC = () => {
           )}
         </div>
 
-        {!filteredPeople.length && (
+        {filteredPeople.length === 0 && (
           <div
             className="
             notification
